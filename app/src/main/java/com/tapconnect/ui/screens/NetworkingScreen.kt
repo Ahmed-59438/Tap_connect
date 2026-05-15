@@ -276,12 +276,12 @@ fun NetworkingScreen(
             }
 
             Spacer(modifier = Modifier.height(14.dp))
-            HorizontalDivider(color = BorderSubtle, thickness = 0.5.dp)
+            Divider(color = BorderSubtle, thickness = 0.5.dp)
             Spacer(modifier = Modifier.height(14.dp))
 
             RadioStatusRow(icon = "📶", name = "NFC", subtitle = "Tap-to-connect", isReady = true)
             Spacer(modifier = Modifier.height(14.dp))
-            HorizontalDivider(color = BorderSubtle, thickness = 0.5.dp)
+            Divider(color = BorderSubtle, thickness = 0.5.dp)
             Spacer(modifier = Modifier.height(14.dp))
             RadioStatusRow(icon = "🔵", name = "Bluetooth LE", subtitle = "Background discovery", isReady = true)
         }
