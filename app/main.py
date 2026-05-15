@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth
+from app.routers import auth, users, discovery
 
 app = FastAPI(title="TapConnect API", version="1.0.0")
 
@@ -13,7 +13,9 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(users.router)
+app.include_router(discovery.router)
 
 @app.get("/")
 async def root():
-    return {"message": "TapConnect Backend is running! Phase 1 (Auth) active."}
+    return {"message": "TapConnect Backend is running! Phase 3 (Discovery) active."}
