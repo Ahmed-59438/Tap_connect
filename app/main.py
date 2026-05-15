@@ -19,4 +19,4 @@ app.include_router(connections.router)
 
 @app.get("/")
 async def root():
-    return {"message": "TapConnect Backend is running! Phase 4 (Networking) active."}
+    return {"message": "TapConnect Backend is running! Phase 5 (Media & Storage) active."}

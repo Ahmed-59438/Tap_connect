@@ -1,11 +1,12 @@
 import uuid
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.dependencies import get_db, get_current_user
 from app.models.user import User
 from app.schemas.user import UserProfileUpdate, UserProfileResponse
+from app.services.storage_service import upload_image_to_cloudinary
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -46,3 +47,24 @@ async def get_user_profile(
         raise HTTPException(status_code=404, detail="User not found")
         
     return user
+
+@router.post("/me/profile-image", response_model=UserProfileResponse)
+async def upload_profile_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Upload a profile image to Cloudinary and update the user's profile_image_url."""
+    # Basic validation
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="File must be an image")
+        
+    image_url = await upload_image_to_cloudinary(file)
+    
+    current_user.profile_image_url = image_url
+    current_user.last_active = datetime.now(timezone.utc)
+    
+    await db.commit()
+    await db.refresh(current_user)
+    
+    return current_user
