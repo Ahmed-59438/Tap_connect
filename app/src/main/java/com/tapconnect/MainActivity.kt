@@ -6,7 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.tapconnect.ui.screens.NetworkingScreen
+import com.tapconnect.ui.screens.ProfileSetupScreen
 import com.tapconnect.ui.theme.TapConnectTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,13 +18,26 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TapConnectTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = androidx.compose.material3.MaterialTheme.colorScheme.background
                 ) {
-                    // For development convenience, we start directly at the Networking screen
-                    NetworkingScreen()
+                    val navController = rememberNavController()
+
+                    NavHost(navController = navController, startDestination = "profile_setup") {
+                        composable("profile_setup") {
+                            ProfileSetupScreen(
+                                onSetupComplete = {
+                                    navController.navigate("networking") {
+                                        popUpTo("profile_setup") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+                        composable("networking") {
+                            NetworkingScreen()
+                        }
+                    }
                 }
             }
         }
