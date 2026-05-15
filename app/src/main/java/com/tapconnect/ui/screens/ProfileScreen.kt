@@ -7,6 +7,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,8 +41,14 @@ fun ProfileScreen() {
     Column(modifier = Modifier.fillMaxSize().background(AppBg)) {
 
         // ── Top bar ──────────────────────────────────────────────
-        Box(modifier = Modifier.fillMaxWidth().background(CardBg).padding(horizontal = 20.dp, vertical = 16.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth().background(CardBg)
+                .padding(horizontal = 20.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text("My Profile", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextH)
+            Icon(Icons.Rounded.Edit, contentDescription = "Edit", tint = AccentIndigo, modifier = Modifier.size(20.dp))
         }
 
         Column(
@@ -47,23 +56,28 @@ fun ProfileScreen() {
                 .padding(horizontal = 16.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
             // ── Avatar ───────────────────────────────────────────
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(modifier = Modifier.size(88.dp).clip(CircleShape).background(Color(0xFF1C1C2E)), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier.size(88.dp).clip(CircleShape).background(Color(0xFF1C1C2E)),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(fullName.take(1), fontSize = 36.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
                 Spacer(Modifier.height(8.dp))
-                Text("Change Photo", fontSize = 14.sp, color = AccentIndigo, fontWeight = FontWeight.Medium)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Icon(Icons.Rounded.AddAPhoto, contentDescription = null, tint = AccentIndigo, modifier = Modifier.size(14.dp))
+                    Text("Change Photo", fontSize = 14.sp, color = AccentIndigo, fontWeight = FontWeight.Medium)
+                }
             }
 
             // ── Basic Info ───────────────────────────────────────
             PCard {
-                PField("Full Name", fullName) { fullName = it }
+                PField("Full Name", fullName, Icons.Rounded.Person) { fullName = it }
                 Spacer(Modifier.height(12.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Column(Modifier.weight(1f)) { PField("Role", role) { role = it } }
-                    Column(Modifier.weight(1f)) { PField("Organization", organization) { organization = it } }
+                    Column(Modifier.weight(1f)) { PField("Role", role, Icons.Rounded.Work) { role = it } }
+                    Column(Modifier.weight(1f)) { PField("Organization", organization, Icons.Rounded.Business) { organization = it } }
                 }
                 Spacer(Modifier.height(12.dp))
                 Text("Bio", fontSize = 12.sp, color = TextSub, fontWeight = FontWeight.Medium)
@@ -75,32 +89,32 @@ fun ProfileScreen() {
                     colors = fieldColors()
                 )
                 Spacer(Modifier.height(12.dp))
-                PField("Interests (comma separated)", interests) { interests = it }
+                PField("Interests (comma separated)", interests, Icons.Rounded.Tag) { interests = it }
             }
 
             // ── Social Links ─────────────────────────────────────
             PCard {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("↔", fontSize = 16.sp, color = AccentIndigo)
+                    Icon(Icons.Rounded.Link, contentDescription = null, tint = AccentIndigo, modifier = Modifier.size(20.dp))
                     Text("Social Links", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TextH)
                 }
                 Spacer(Modifier.height(16.dp))
-                SField("LINKEDIN",    "↔", linkedin,   { linkedin = it })
+                SField("LINKEDIN",    Icons.Rounded.Work,        linkedin,   { linkedin = it })
                 Spacer(Modifier.height(12.dp))
-                SField("INSTAGRAM",   "📸", instagram,  { instagram = it })
+                SField("INSTAGRAM",   Icons.Rounded.PhotoCamera, instagram,  { instagram = it })
                 Spacer(Modifier.height(12.dp))
-                SField("WHATSAPP",    "📞", whatsapp,   { whatsapp = it }, KeyboardType.Phone)
+                SField("WHATSAPP",    Icons.Rounded.Phone,        whatsapp,   { whatsapp = it }, KeyboardType.Phone)
                 Spacer(Modifier.height(12.dp))
-                SField("TWITTER / X", "⚡", twitter,    { twitter = it })
+                SField("TWITTER / X", Icons.Rounded.AlternateEmail, twitter, { twitter = it })
                 Spacer(Modifier.height(12.dp))
-                SField("WEBSITE",     "🌐", website,    { website = it },  KeyboardType.Uri)
+                SField("WEBSITE",     Icons.Rounded.Language,    website,    { website = it },  KeyboardType.Uri)
             }
 
-            // ── Discovery toggles ────────────────────────────────
+            // ── Discovery Toggles ────────────────────────────────
             PCard {
-                TRow("Discoverable via NFC", "Tap-to-connect with nearby users", nfcEnabled) { nfcEnabled = it }
+                TRow(Icons.Rounded.Nfc,       "Discoverable via NFC", "Tap-to-connect",     nfcEnabled) { nfcEnabled = it }
                 HorizontalDivider(color = Divider, modifier = Modifier.padding(vertical = 8.dp))
-                TRow("Discoverable via BLE", "Background radar scanning", bleEnabled)         { bleEnabled = it }
+                TRow(Icons.Rounded.Bluetooth, "Discoverable via BLE", "Background scanning", bleEnabled) { bleEnabled = it }
             }
 
             // ── Save ─────────────────────────────────────────────
@@ -110,6 +124,8 @@ fun ProfileScreen() {
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = AccentIndigo)
             ) {
+                Icon(Icons.Rounded.Save, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
                 Text("Save Changes", fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color.White)
             }
 
@@ -118,7 +134,7 @@ fun ProfileScreen() {
     }
 }
 
-// ── Helpers ──────────────────────────────────────────────────────
+// ── Card wrapper ─────────────────────────────────────────────────
 
 @Composable
 fun PCard(content: @Composable ColumnScope.() -> Unit) {
@@ -130,37 +146,41 @@ fun PCard(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
-fun PField(label: String, value: String, kbType: KeyboardType = KeyboardType.Text, onChange: (String) -> Unit) {
+fun PField(label: String, value: String, icon: ImageVector, kbType: KeyboardType = KeyboardType.Text, onChange: (String) -> Unit) {
     Text(label, fontSize = 12.sp, color = TextSub, fontWeight = FontWeight.Medium)
     Spacer(Modifier.height(4.dp))
     OutlinedTextField(
         value = value, onValueChange = onChange,
         modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp), singleLine = true,
+        leadingIcon = { Icon(icon, contentDescription = null, tint = TextSub, modifier = Modifier.size(18.dp)) },
         keyboardOptions = KeyboardOptions(keyboardType = kbType, imeAction = ImeAction.Next),
         colors = fieldColors()
     )
 }
 
 @Composable
-fun SField(label: String, icon: String, value: String, onChange: (String) -> Unit, kbType: KeyboardType = KeyboardType.Text) {
+fun SField(label: String, icon: ImageVector, value: String, onChange: (String) -> Unit, kbType: KeyboardType = KeyboardType.Text) {
     Text(label, fontSize = 11.sp, color = TextSub, fontWeight = FontWeight.SemiBold, letterSpacing = 0.5.sp)
     Spacer(Modifier.height(4.dp))
     OutlinedTextField(
         value = value, onValueChange = onChange,
         modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp), singleLine = true,
-        leadingIcon = { Text(icon, fontSize = 15.sp, modifier = Modifier.padding(start = 4.dp)) },
+        leadingIcon = { Icon(icon, contentDescription = null, tint = AccentIndigo, modifier = Modifier.size(18.dp)) },
         keyboardOptions = KeyboardOptions(keyboardType = kbType, imeAction = ImeAction.Next),
         colors = fieldColors()
     )
 }
 
 @Composable
-fun TRow(label: String, sub: String, checked: Boolean, onToggle: (Boolean) -> Unit) {
+fun TRow(icon: ImageVector, label: String, sub: String, checked: Boolean, onToggle: (Boolean) -> Unit) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween) {
-        Column(Modifier.weight(1f)) {
-            Text(label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = TextH)
-            Text(sub, fontSize = 12.sp, color = TextSub)
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+            Icon(icon, contentDescription = null, tint = if (checked) AccentIndigo else TextSub, modifier = Modifier.size(20.dp))
+            Column {
+                Text(label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = TextH)
+                Text(sub, fontSize = 12.sp, color = TextSub)
+            }
         }
         Switch(checked = checked, onCheckedChange = onToggle,
             colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = AccentIndigo))
@@ -170,7 +190,6 @@ fun TRow(label: String, sub: String, checked: Boolean, onToggle: (Boolean) -> Un
 @Composable
 fun fieldColors() = OutlinedTextFieldDefaults.colors(
     focusedBorderColor = AccentIndigo, unfocusedBorderColor = Divider,
-    focusedTextColor = TextH, unfocusedTextColor = TextH,
-    cursorColor = AccentIndigo,
+    focusedTextColor = TextH, unfocusedTextColor = TextH, cursorColor = AccentIndigo,
     unfocusedContainerColor = Color(0xFFFAFAFA), focusedContainerColor = Color.White
 )
