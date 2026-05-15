@@ -6,6 +6,7 @@ from app.dependencies import get_db, get_current_user
 from app.models.user import User
 from app.models.connection import Connection, ConnectionStatus, ConnectionType
 from app.schemas.connection import ConnectionRequest, ConnectionResponse, ConnectionAction
+from app.services.websocket_manager import manager
 
 router = APIRouter(prefix="/connections", tags=["connections"])
 
@@ -46,6 +47,19 @@ async def send_connection_request(
     db.add(new_conn)
     await db.commit()
     await db.refresh(new_conn)
+    
+    # Push real-time notification to the receiver
+    await manager.send_personal_message(
+        {
+            "type": "new_connection_request",
+            "message": f"You have a new connection request from {current_user.full_name}",
+            "connection_id": str(new_conn.connection_id),
+            "sender_id": str(current_user.user_id),
+            "sender_name": current_user.full_name
+        },
+        body.peer_id
+    )
+    
     return new_conn
 
 @router.post("/accept", response_model=ConnectionResponse)
@@ -69,6 +83,19 @@ async def accept_connection(
     conn.status = ConnectionStatus.ACCEPTED
     await db.commit()
     await db.refresh(conn)
+    
+    # Push real-time notification to the original sender
+    await manager.send_personal_message(
+        {
+            "type": "request_accepted",
+            "message": f"{current_user.full_name} accepted your connection request!",
+            "connection_id": str(conn.connection_id),
+            "accepter_id": str(current_user.user_id),
+            "accepter_name": current_user.full_name
+        },
+        conn.user_id
+    )
+    
     return conn
 
 @router.get("/", response_model=List[ConnectionResponse])
