@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.orm import DeclarativeBase
 from app.config import settings
 
-db_url = settings.DATABASE_URL
+db_url = settings.DATABASE_URL.strip()
 # Render and Supabase often use postgres://, but asyncpg needs postgresql+asyncpg://
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql+asyncpg://", 1)
